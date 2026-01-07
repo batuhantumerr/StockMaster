@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using StockMaster.API.Filters;
-using StockMaster.API.Middlewares;
 using StockMaster.API.Middlewares;
 using StockMaster.Application.Validators;
 using StockMaster.Core.Repositories;
@@ -19,6 +19,7 @@ using StockMaster.Infrastructure.UnitOfWorks;
 using StockMaster.Service.Mapping;
 using StockMaster.Service.Services;
 using System.Text;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,7 +41,37 @@ builder.Services.AddFluentValidationAutoValidation(); // Otomatik validasyonu aç
 builder.Services.AddValidatorsFromAssemblyContaining<ProductDtoValidator>(); // Validator'larýn olduðu yeri göster
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "StockMaster API", Version = "v1" });
+
+    // 1. "Authorize" kutucuðunu tanýmlýyoruz
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\""
+    });
+
+    // 2. Bu güvenliði tüm endpointlere zorunlu kýlýyoruz (Kilit simgesi çýksýn)
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 
 // PostgreSQL Veritabaný Baðlantýsý
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -96,6 +127,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

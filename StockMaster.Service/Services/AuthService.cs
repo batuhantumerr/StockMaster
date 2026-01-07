@@ -15,7 +15,7 @@ namespace StockMaster.Service.Services
     {
         private readonly IGenericRepository<AppUser> _userRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IConfiguratiçon _configuration; // appsettings'i okumak için
+        private readonly IConfiguration _configuration; // appsettings'i okumak için
 
         public AuthService(IGenericRepository<AppUser> userRepository, IUnitOfWork unitOfWork, IConfiguration configuration)
         {
@@ -50,7 +50,7 @@ namespace StockMaster.Service.Services
                 Password = registerDto.Password, // Normalde Hashlenmeli!
                 UserName = registerDto.UserName,
                 Role = "Admin", // Şimdilik herkes Admin :)
-                CreatedDate = DateTime.Now
+                CreatedDate = DateTime.UtcNow
             };
 
             await _userRepository.AddAsync(user);
@@ -73,7 +73,7 @@ namespace StockMaster.Service.Services
                 new Claim(ClaimTypes.Role, user.Role)
             };
 
-            var expiration = DateTime.Now.AddMinutes(int.Parse(_configuration["TokenOptions:AccessTokenExpiration"]));
+            var expiration = DateTime.UtcNow.AddMinutes(int.Parse(_configuration["TokenOptions:AccessTokenExpiration"]));
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["TokenOptions:Issuer"],
