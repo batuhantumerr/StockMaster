@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StockMaster.Application.DTOs;
 using StockMaster.Core.Entities;
 using StockMaster.Core.Services;
 
 namespace StockMaster.API.Controllers
 {
+    [Authorize]
+    [Route("api/[controller]")]
+    [ApiController]
     public class CategoriesController : CustomBaseController
     {
         // Generic Service'i Category ve CategoryDto tipleriyle çağırıyoruz

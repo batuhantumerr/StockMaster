@@ -1,10 +1,13 @@
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using StockMaster.API.Filters;
+using StockMaster.API.Middlewares;
 using StockMaster.API.Middlewares;
 using StockMaster.Application.Validators;
 using StockMaster.Core.Repositories;
@@ -15,7 +18,7 @@ using StockMaster.Infrastructure.Repositories;
 using StockMaster.Infrastructure.UnitOfWorks;
 using StockMaster.Service.Mapping;
 using StockMaster.Service.Services;
-using StockMaster.API.Middlewares;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +51,26 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         npgsqlOptions.MigrationsAssembly("StockMaster.Infrastructure");
     });
 });
+
+// AuthService'i Kaydet
+builder.Services.AddScoped<AuthService>();
+
+// Authentication (Kimlik Doðrulama) Ayarlarý
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            ValidIssuer = builder.Configuration["TokenOptions:Issuer"],
+            ValidAudience = builder.Configuration["TokenOptions:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenOptions:SecurityKey"]))
+        };
+    });
 
 // Generic Repository ve UnitOfWork Kayýtlarý
 // Scoped: Her HTTP isteði için bir tane nesne üretir.
