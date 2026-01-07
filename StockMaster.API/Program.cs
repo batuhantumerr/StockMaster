@@ -1,20 +1,38 @@
+using AutoMapper;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using StockMaster.API.Filters;
+using StockMaster.Application.Validators;
 using StockMaster.Core.Repositories;
-using StockMaster.Service.Mapping;
 using StockMaster.Core.Services;
 using StockMaster.Core.UnitOfWorks;
 using StockMaster.Infrastructure.Context;
 using StockMaster.Infrastructure.Repositories;
 using StockMaster.Infrastructure.UnitOfWorks;
+using StockMaster.Service.Mapping;
 using StockMaster.Service.Services;
-using AutoMapper;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    // Filter'ý tüm controllerlara uyguluyoruz
+    options.Filters.Add<ValidateFilterAttribute>();
+});
+
+// .NET'in kendi varsayýlan validasyon cevabýný kapatýyoruz (Çünkü biz Filter ile yöneteceðiz)
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
+builder.Services.AddFluentValidationAutoValidation(); // Otomatik validasyonu aç
+builder.Services.AddValidatorsFromAssemblyContaining<ProductDtoValidator>(); // Validator'larýn olduðu yeri göster
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
