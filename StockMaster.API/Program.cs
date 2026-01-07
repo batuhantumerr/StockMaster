@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using StockMaster.API.Filters;
+using StockMaster.API.Middlewares;
 using StockMaster.Application.Validators;
 using StockMaster.Core.Repositories;
 using StockMaster.Core.Services;
@@ -14,6 +15,7 @@ using StockMaster.Infrastructure.Repositories;
 using StockMaster.Infrastructure.UnitOfWorks;
 using StockMaster.Service.Mapping;
 using StockMaster.Service.Services;
+using StockMaster.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +61,8 @@ builder.Services.AddAutoMapper(typeof(MapProfile));
 builder.Services.AddScoped(typeof(IService<,>), typeof(Service<,>));
 
 var app = builder.Build();
+
+app.UseCustomException();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
