@@ -4,7 +4,9 @@ using System.Text;
 
 namespace StockMaster.Core.UnitOfWorks
 {
-    internal interface IUnitOfWork
+    public interface IUnitOfWork
     {
+        Task CommitAsync(); // SaveChangesAsync
+        void Commit();      // SaveChanges
     }
 }
