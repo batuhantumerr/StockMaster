@@ -1,0 +1,43 @@
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow-lg p-4" style="width: 100%; max-width: 400px; border-radius: 15px;">
+        <div class="card-body">
+
+            <div class="text-center mb-4">
+                <i class="fa fa-cubes fa-3x text-primary mb-2"></i>
+                <h3 class="fw-bold text-dark">StockMaster</h3>
+                <p class="text-muted">Yönetim Paneli Girişi</p>
+            </div>
+
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Email Adresi</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light"><i class="fa fa-envelope text-secondary"></i></span>
+                        <input type="email" class="form-control" formControlName="email" placeholder="ornek@email.com">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Şifre</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light"><i class="fa fa-lock text-secondary"></i></span>
+                        <input type="password" class="form-control" formControlName="password" placeholder="******">
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" [disabled]="loginForm.invalid" class="btn btn-primary btn-lg fw-bold">
+                        <i class="fa fa-sign-in me-2"></i> Giriş Yap
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="card-footer text-center bg-white border-0 mt-2">
+            <small class="text-muted">Hesabınız yok mu? <a href="#" class="text-decoration-none">Yöneticiyle
+                    görüşün.</a></small>
+        </div>
+    </div>
+</div>

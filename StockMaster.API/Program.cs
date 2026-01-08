@@ -114,6 +114,18 @@ builder.Services.AddAutoMapper(typeof(MapProfile));
 // Generic Service Kaydý
 builder.Services.AddScoped(typeof(IService<,>), typeof(Service<,>));
 
+// CORS Politikasý (Frontend'e izin ver)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:4200") // Angular'ýn adresi
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
+
 var app = builder.Build();
 
 app.UseCustomException();
@@ -126,7 +138,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors("AllowAngular");
 app.UseAuthentication();
 app.UseAuthorization();
 

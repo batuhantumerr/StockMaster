@@ -1,0 +1,81 @@
+<div class="d-flex" id="wrapper">
+    <div class="bg-dark text-white border-end" style="width: 250px; min-height: 100vh;">
+        <div class="sidebar-heading text-center py-4 fs-4 fw-bold border-bottom border-secondary">
+            <i class="fa fa-cubes me-2"></i>StockMaster
+        </div>
+        <div class="list-group list-group-flush my-3">
+            <a href="#" class="list-group-item list-group-item-action bg-transparent text-white fw-bold">
+                <i class="fa fa-tachometer me-2"></i> Ana Sayfa
+            </a>
+            <a href="#" class="list-group-item list-group-item-action bg-transparent text-white-50">
+                <i class="fa fa-box me-2"></i> Ürünler
+            </a>
+            <a href="#" class="list-group-item list-group-item-action bg-transparent text-white-50">
+                <i class="fa fa-users me-2"></i> Kullanıcılar
+            </a>
+            <a href="#" class="list-group-item list-group-item-action bg-transparent text-white-50">
+                <i class="fa fa-cogs me-2"></i> Ayarlar
+            </a>
+        </div>
+    </div>
+    <div id="page-content-wrapper" class="w-100">
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom px-3 py-3">
+            <div class="container-fluid">
+                <h4 class="m-0">Yönetim Paneli</h4>
+
+                <button class="btn btn-outline-danger btn-sm" (click)="logout()">
+                    <i class="fa fa-sign-out me-1"></i> Çıkış Yap
+                </button>
+            </div>
+        </nav>
+
+        <div class="container-fluid p-4">
+            <div class="alert alert-success shadow-sm">
+                <h4 class="alert-heading">Hoşgeldiniz!</h4>
+                <p>Başarıyla giriş yaptınız. Sol menüden işlemleri gerçekleştirebilirsiniz.</p>
+                <hr>
+                <p class="mb-0">Token süreniz dolana kadar sistemde kalabilirsiniz.</p>
+            </div>
+
+        </div>
+
+        <div class="card mt-4 shadow-sm">
+            <div class="card-header bg-white fw-bold">
+                <i class="fa fa-list me-2"></i> Ürün Listesi
+            </div>
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Ürün Adı</th>
+                            <th>Stok</th>
+                            <th>Fiyat</th>
+                            <th>Oluşturulma Tarihi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of products">
+                            <td>{{ item.id }}</td>
+                            <td>{{ item.name }}</td>
+                            <td>
+                                <span class="badge" [ngClass]="item.stock < 10 ? 'bg-danger' : 'bg-success'">
+                                    {{ item.stock }}
+                                </span>
+                            </td>
+                            <td>{{ item.price | currency:'₺' }}</td>
+                            <td>{{ item.createdDate | date:'dd.MM.yyyy HH:mm' }}</td>
+                        </tr>
+
+                        <tr *ngIf="products.length === 0">
+                            <td colspan="5" class="text-center text-muted py-3">
+                                Henüz hiç ürün yok
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
